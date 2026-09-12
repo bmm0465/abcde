@@ -10,7 +10,7 @@
 | 프로젝트 | 종류 | 상태 |
 |---|---|---|
 | **AIDAPEL** — AI 초등영어 기초학력 진단 플랫폼 | 통합 앱 | 이식 중 (`/aidapel`) |
-| **AIEEWA** — 초등 영어 서술형 문항 생성·자동 채점 | 통합 앱 | 이식 중 (`/aieewa`) |
+| **AIEEWA** — 초등 영어 서술형 문항 생성·자동 채점 | 통합 앱 | 운영 중 (`/aieewa`) |
 | Teacher in the Loop — 교수행동 연습 플랫폼 | 외부 링크 | 비공개 베타 |
 | 초등영어와 AI 에듀테크 — 2026-1 강의 사이트 | 외부 링크 | 운영 중 |
 | AI 펭톡 데이터 분석 | 분석·글 | 완료 |
@@ -55,6 +55,7 @@ Supabase 프로젝트 준비, 마이그레이션 적용, 관리자 지정, Verce
 | `npm run check:secrets` | 추적 파일에 비밀값·개인정보 파일이 없는지 검사 |
 | `npm run db:push` | 링크된 Supabase 프로젝트에 마이그레이션 적용 |
 | `npm run admin:promote -- you@example.com` | 관리자 지정 |
+| `npm run aieewa:seed` | `./corpus`(gitignore) 의 교육과정 자료를 AIEEWA 의 RAG 코퍼스로 적재 |
 
 ## 새 프로젝트 추가하기
 

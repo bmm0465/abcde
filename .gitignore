@@ -44,7 +44,9 @@ supabase/.branches
 !.env.example
 
 # 저작권 자료 — 교과서·평가 자료 PDF 는 로컬에만 둔다. RAG 코퍼스는 DB 에만 있다.
+# /corpus 는 npm run aieewa:seed 가 읽는 폴더다. 원본은 여기 두고 서버에는 청크만 올린다.
 *.pdf
+/corpus/
 /public/pdf/
 /data/pdf/
 

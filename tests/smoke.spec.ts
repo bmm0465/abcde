@@ -44,9 +44,25 @@ test.describe('인증', () => {
   })
 
   test('보호 경로는 로그인으로 보낸다', async ({ page }) => {
-    for (const path of ['/admin', '/account', '/aieewa']) {
+    for (const path of ['/admin', '/account', '/aieewa', '/aieewa/generate']) {
       await page.goto(path)
       await expect(page).toHaveURL(new RegExp(`/login\\?next=${encodeURIComponent(path)}`))
+    }
+  })
+})
+
+test.describe('AIEEWA', () => {
+  test('소개는 공개, 사용은 로그인', async ({ page }) => {
+    await page.goto('/projects/aieewa')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('AIEEWA')
+    await expect(page.getByRole('link', { name: '로그인하고 사용' })).toBeVisible()
+  })
+
+  test('API 는 로그인 없이 거절한다', async ({ request }) => {
+    for (const path of ['/api/aieewa/generate', '/api/aieewa/score']) {
+      const res = await request.post(path, { data: {} })
+      expect(res.status()).toBe(401)
+      expect((await res.json()).code).toBe('unauthenticated')
     }
   })
 })

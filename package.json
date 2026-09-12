@@ -13,7 +13,8 @@
     "check:secrets": "node scripts/check-secrets.mjs",
     "db:new": "supabase migration new",
     "db:push": "supabase db push --linked",
-    "admin:promote": "node --env-file=.env.local scripts/promote-admin.mjs"
+    "admin:promote": "node --env-file=.env.local scripts/promote-admin.mjs",
+    "aieewa:seed": "node --env-file=.env.local scripts/aieewa-seed-corpus.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -36,6 +37,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
+    "pdf-parse": "^2.4.5",
     "supabase": "^2.117.0",
     "tailwindcss": "^4",
     "typescript": "^5"

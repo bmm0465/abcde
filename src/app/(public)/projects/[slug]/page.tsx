@@ -16,7 +16,10 @@ import { isSupabaseConfigured } from '@/lib/env'
 import { getNotes } from '@/lib/notes'
 import { getAppAccess, getViewer } from '@/lib/supabase/server'
 
-type Params = { params: Promise<{ slug: string }> }
+type Params = {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ error?: string }>
+}
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params
@@ -71,8 +74,9 @@ async function ProjectAction({ project }: { project: Project }) {
   )
 }
 
-export default async function ProjectPage({ params }: Params) {
+export default async function ProjectPage({ params, searchParams }: Params) {
   const { slug } = await params
+  const { error } = await searchParams
   const project = getProject(slug)
   if (!project) notFound()
 
@@ -90,6 +94,12 @@ export default async function ProjectPage({ params }: Params) {
         description={project.summary}
         actions={<ProjectAction project={project} />}
       />
+
+      {error === 'role' && (
+        <Notice tone="warn" className="mb-8 max-w-prose">
+          {ACCESS_REASON_LABELS.role}
+        </Notice>
+      )}
 
       {project.status === 'migrating' && (
         <Notice tone="warn" className="mb-8">
