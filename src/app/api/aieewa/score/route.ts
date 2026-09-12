@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
       fail(err instanceof Error ? err.message : '채점에 실패했습니다.', 'score_failed')
     } finally {
       for (const usage of meter.entries()) {
-        await recordUsage({ ...usage, userId: viewer.user.id, appSlug: 'aieewa', provider: 'openai', kind: 'chat' })
+        await recordUsage(viewer.supabase, { ...usage, appSlug: 'aieewa', provider: 'openai', kind: 'chat' })
       }
     }
   })

@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     } finally {
       // 도중에 실패했어도 그때까지 쓴 토큰은 이미 나갔다. 반드시 기록한다.
       for (const usage of meter.entries()) {
-        await recordUsage({ ...usage, userId: viewer.user.id, appSlug: 'aieewa', provider: 'openai', kind: 'chat' })
+        await recordUsage(viewer.supabase, { ...usage, appSlug: 'aieewa', provider: 'openai', kind: 'chat' })
       }
     }
   })

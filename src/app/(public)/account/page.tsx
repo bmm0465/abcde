@@ -28,7 +28,7 @@ export default async function AccountPage({
   let used: number | null = null
   if (profile) {
     try {
-      used = await getMonthlyUsageUsd(profile.id)
+      used = await getMonthlyUsageUsd(viewer.supabase, profile.id)
     } catch {
       used = null
     }

@@ -45,8 +45,8 @@ export async function guardLlmRequest(projectSlug: string, route: string): Promi
   const auth = await authorizeApi(projectSlug)
   if (auth instanceof NextResponse) return auth
   try {
-    await assertRateLimit(auth.viewer.user.id, route)
-    await assertWithinBudget(auth.viewer.profile)
+    await assertRateLimit(auth.viewer.supabase, route)
+    await assertWithinBudget(auth.viewer.supabase, auth.viewer.profile)
   } catch (err) {
     if (err instanceof RateLimitError) return apiError(429, err.message, 'rate_limited')
     if (err instanceof UsageLimitError) return apiError(429, err.message, 'budget_exceeded')
