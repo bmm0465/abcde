@@ -1,26 +1,444 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   ABCDE Projects 디자인 토큰 — "교실의 연구 노트"
+   docs/03-디자인-시스템.md 의 구현체.
+
+   종이 위에 잉크로 쓴 학급 일지와 학술지 조판을 참조한다.
+   · 바탕은 종이, 글자는 잉크, 액센트는 칠판 녹색 하나, 붉은 연필은 표시(mark)에만.
+   · 제목은 명조(세리프), 본문은 산세리프, 날짜·숫자·라벨은 모노스페이스.
+   · 위계는 괘선으로: 표 위에는 굵은 선 하나, 행 사이에는 가는 선.
+   Tailwind 기본 팔레트는 initial 로 지운다 → bg-purple-500 을 쓰면 빌드가 깨진다.
+   ============================================================ */
+
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+
+  /* 바탕 4단계 — 흰 종이. 아래로 갈수록 눌린 면.
+     bg 와 surface 가 같은 흰색인 것은 의도다. 판(panel)과 입력칸은 채움이 아니라 선으로 선다. */
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-sunken: #f5f3ee;
+  --color-inset: #eae7df;
+
+  /* 괘선 — 회색이 아니라 아주 연한 먹색. 종이 위의 연필 괘선 */
+  --color-line: #e3e0d8;
+  --color-line-strong: #b2ada0;
+
+  /* 잉크 */
+  --color-text: #1c1b18;
+  --color-muted: #5c574d;
+  --color-faint: #8a8375;
+
+  /* 액센트 — 칠판 녹색. 링크·선택·주 동작 */
+  --color-accent: #24593f;
+  --color-accent-hover: #1a4530;
+  --color-accent-weak: #eaf2ec;
+  --color-on-accent: #ffffff;
+
+  /* 표시 — 붉은 연필. 워드마크의 마침표, 현재 위치 표시, 태그라인 머리글자에만 */
+  --color-mark: #b7412b;
+  --color-mark-weak: #fbe8e2;
+
+  /* 의미색 — 배지·라벨까지만 */
+  --color-ok: #2f6b4f;
+  --color-ok-weak: #eaf3ed;
+  --color-warn: #8a6212;
+  --color-warn-weak: #faf1dd;
+  --color-danger: #9a3b2e;
+  --color-danger-weak: #fbe6e1;
+  --color-info: #3d5a80;
+  --color-info-weak: #eaeff6;
+
+  /* 데이터 시각화 */
+  --color-viz-1: #24593f;
+  --color-viz-2: #b7412b;
+  --color-viz-3: #8a6212;
+  --color-viz-4: #5c574d;
+
+  /* ── 타이포 ───────────────────────────────────────────── */
+  --text-*: initial;
+  --text-caption: 0.75rem; /* 12 */
+  --text-caption--line-height: 1.5;
+  --text-sm: 0.8125rem; /* 13 */
+  --text-sm--line-height: 1.6;
+  --text-base: 0.9375rem; /* 15 — 한글 본문 */
+  --text-base--line-height: 1.75;
+  --text-lg: 1.0625rem; /* 17 — 목록의 제목 */
+  --text-lg--line-height: 1.5;
+  --text-h3: 1rem; /* 16 */
+  --text-h3--line-height: 1.5;
+  --text-h2: 1.25rem; /* 20 — 섹션 제목, 명조 */
+  --text-h2--line-height: 1.4;
+  --text-display: 1.625rem; /* 26 */
+  --text-display--line-height: 1.35;
+  --text-title: 2rem; /* 32 — 화면 제목, 명조 */
+  --text-title--line-height: 1.3;
+  --text-hero: 2.75rem; /* 44 — 첫 화면 한 곳에서만 */
+  --text-hero--line-height: 1.2;
+  --text-metric: 1.375rem; /* 22 — 지표 숫자, 모노 */
+  --text-metric--line-height: 1.2;
+
+  --tracking-*: initial;
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.012em;
+  --tracking-normal: -0.003em;
+  --tracking-none: 0;
+  --tracking-wide: 0.08em;
+  --tracking-wider: 0.14em;
+
+  --font-weight-*: initial;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700; /* 명조 제목에만 */
+
+  /* ── 모서리: 인쇄물처럼 날카롭게 ────────────────────────── */
+  --radius-*: initial;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 6px;
+  --radius-full: 9999px;
+
+  /* ── 그림자: 떠 있는 것에만 ────────────────────────────── */
+  --shadow-*: initial;
+  --shadow-pop: 0 1px 2px rgba(28, 27, 24, 0.08), 0 6px 16px rgba(28, 27, 24, 0.1);
+  --shadow-modal: 0 12px 40px rgba(28, 27, 24, 0.22);
+
+  --ease-*: initial;
+  --ease-out: cubic-bezier(0.2, 0, 0.2, 1);
+  --animate-*: initial;
+
+  --spacing: 4px;
+  --container-*: initial;
+  --container-prose: 42rem;
+  --container-site: 70rem;
+  --container-app: 90rem;
 }
 
+/* 글꼴은 next/font 가 <html> 에 심는 변수를 받는다 (src/app/layout.tsx). */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-*: initial;
+  --font-sans:
+    var(--font-plex-sans), 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif;
+  --font-serif: var(--font-serif-kr), 'Apple Myungjo', 'Nanum Myeongjo', 'Noto Serif KR', Georgia, serif;
+  --font-mono: var(--font-plex-mono), 'D2Coding', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
+
+/* ============================================================
+   어두운 화면 — 칠판. 시스템 설정만 따른다.
+   ============================================================ */
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-bg: #1b201d;
+    --color-surface: #222824;
+    --color-sunken: #2a302c;
+    --color-inset: #333a35;
+
+    --color-line: #3d453f;
+    --color-line-strong: #5a6459;
+
+    --color-text: #ebe6da;
+    --color-muted: #b3ada0;
+    --color-faint: #8b8579;
+
+    --color-accent: #8fc7a8;
+    --color-accent-hover: #a8d6bd;
+    --color-accent-weak: #263b31;
+    --color-on-accent: #10201a;
+
+    --color-mark: #e2907c;
+    --color-mark-weak: #3c2a26;
+
+    --color-ok: #8fc7a8;
+    --color-ok-weak: #243a30;
+    --color-warn: #d9b46a;
+    --color-warn-weak: #3a3120;
+    --color-danger: #e08f80;
+    --color-danger-weak: #3d2724;
+    --color-info: #9db7d6;
+    --color-info-weak: #26303c;
+
+    --color-viz-1: #8fc7a8;
+    --color-viz-2: #e2907c;
+    --color-viz-3: #d9b46a;
+    --color-viz-4: #b3ada0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================
+   Base
+   ============================================================ */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light dark;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.75;
+    letter-spacing: -0.003em;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    color: var(--color-text);
+    text-wrap: balance;
+  }
+
+  h4 {
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  table,
+  .tabular,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background: var(--color-accent-weak);
+    color: var(--color-text);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::placeholder {
+    color: var(--color-faint);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ── 유틸리티 ───────────────────────────────────────────── */
+
+/* 가는 괘선 */
+@utility hairline-b {
+  border-bottom: 1px solid var(--color-line);
+}
+
+@utility hairline-t {
+  border-top: 1px solid var(--color-line);
+}
+
+/* 굵은 괘선 — 표와 섹션의 머리에 하나만 */
+@utility rule-t {
+  border-top: 2px solid var(--color-text);
+}
+
+@utility rule-b {
+  border-bottom: 2px solid var(--color-text);
+}
+
+/* 모눈종이 — 첫 화면 리드 블록에만. 흰 바탕에서는 선이 옅어지므로 조금 진하게 */
+@utility paper-grid {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-line) 80%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-line) 80%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: -1px -1px;
+}
+
+/* 라벨 — 모노, 대문자, 자간 */
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   본문 조판 (Field Notes · 프로젝트 설명) — 학술지의 리듬
+   ============================================================ */
+
+.prose {
+  max-width: var(--container-prose);
+  color: var(--color-text);
+}
+
+.prose > * + * {
+  margin-top: 1em;
+}
+
+.prose h2 {
+  font-size: var(--text-h2);
+  line-height: var(--text-h2--line-height);
+  letter-spacing: var(--tracking-snug);
+  margin-top: 2.5em;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid var(--color-line-strong);
+}
+
+.prose h3 {
+  font-size: var(--text-h3);
+  line-height: var(--text-h3--line-height);
+  margin-top: 1.75em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+}
+
+.prose ul {
+  list-style: disc;
+}
+
+.prose ol {
+  list-style: decimal;
+}
+
+.prose li + li {
+  margin-top: 0.35em;
+}
+
+.prose li::marker {
+  color: var(--color-faint);
+  font-family: var(--font-mono);
+}
+
+.prose blockquote {
+  font-family: var(--font-serif);
+  font-size: 1.04em;
+  border-left: 2px solid var(--color-mark);
+  padding-left: 1em;
+  color: var(--color-muted);
+}
+
+.prose a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+.prose a:hover {
+  color: var(--color-accent-hover);
+  text-decoration-color: currentColor;
+}
+
+.prose strong {
+  font-weight: 600;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--color-sunken);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  padding: 0.1em 0.35em;
+}
+
+.prose pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  /* surface 는 이제 바탕과 같은 흰색이다. 코드 블록은 눌린 면으로 구분한다. */
+  background: var(--color-sunken);
+  border: 1px solid var(--color-line);
+  border-left: 3px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+}
+
+.prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--color-line-strong);
+  padding: 4px;
+  background: var(--color-surface);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--color-line-strong);
+  margin: 2.5em 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  display: block;
+  overflow-x: auto;
+  border-top: 2px solid var(--color-text);
+  border-bottom: 1px solid var(--color-line-strong);
+}
+
+.prose th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-wide);
+  font-weight: 500;
+  color: var(--color-muted);
+  border-bottom: 1px solid var(--color-line-strong);
+  padding: 0.5rem 0.75rem;
+}
+
+.prose td {
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+}
+
+.prose tr:last-child td {
+  border-bottom: 0;
 }

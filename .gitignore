@@ -1,41 +1,58 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
 .pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
 
 # next.js
 /.next/
 /out/
-
-# production
 /build
 
 # misc
 .DS_Store
 *.pem
-
-# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# vercel / supabase 로컬 상태
+.vercel
+supabase/.temp
+supabase/.branches
+
+# ────────────────────────────────────────────────────────────
+# 비밀·개인정보 — 공개 저장소다. 아래는 절대 커밋하지 않는다.
+# ────────────────────────────────────────────────────────────
+
+# 환경 변수 (키 이름만 .env.example 에 둔다)
+.env
+.env*.local
+.env.production
+!.env.example
+
+# 저작권 자료 — 교과서·평가 자료 PDF 는 로컬에만 둔다. RAG 코퍼스는 DB 에만 있다.
+*.pdf
+/public/pdf/
+/data/pdf/
+
+# 학생·교사 개인정보 — 명단, 계정 목록, 평가 결과 내보내기
+/exports/
+/roster/
+accounts-*.csv
+*.xlsx
+*계정*
+*명단*
+*비밀번호*

@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # 빌드·스모크 테스트용 가짜 값. 세션 쿠키가 없으면 네트워크로 나가지 않는다.
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_placeholder
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: 비밀값·개인정보 파일 검사
+        run: npm run check:secrets
+      - name: 타입 검사
+        run: npm run typecheck
+      - name: 린트 (디자인 규칙 포함)
+        run: npm run lint
+      - name: 빌드
+        run: npm run build
+      - name: Playwright 브라우저 설치
+        run: npx playwright install --with-deps chromium
+      - name: 스모크 테스트
+        run: npm run test:e2e
+        env:
+          CI: true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
